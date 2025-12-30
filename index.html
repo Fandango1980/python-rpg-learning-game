@@ -529,9 +529,34 @@
                 title: '🎯 Print Spreuk',
                 story: '🧙‍♂️ <strong>Pythonicus spreekt:</strong><br><br>"Welkom! De <strong>Syntax Bug</strong> is je eerste vijand. De <strong>print()</strong> spreuk is de basis van alle code magie!"',
                 challenges: [
-                    { text: '📜 Print "Hallo Pythonia!"', hint: 'print("Hallo Pythonia!")', check: (c) => c.toLowerCase().includes('print') && c.toLowerCase().includes('hallopythonia') },
-                    { text: '📜 Print "Ik ben een Code Krijger!"', hint: 'print("Ik ben een Code Krijger!")', check: (c) => c.toLowerCase().includes('print') && c.toLowerCase().includes('codekrij') },
-                    { text: '📜 Print "Syntax Bug verslagen!"', hint: 'print("Syntax Bug verslagen!")', check: (c) => c.toLowerCase().includes('print') && (c.toLowerCase().includes('syntaxbug') || c.toLowerCase().includes('verslagen')) }
+                    { 
+                        text: '📜 Print "Hallo Pythonia!"', 
+                        hint: 'print("Hallo Pythonia!")', 
+                        check: (c) => {
+                            const normalized = c.toLowerCase().replace(/\s+/g, '');
+                            return normalized.includes('print') && 
+                                   (normalized.includes('"hallopythonia!"') || 
+                                    normalized.includes("'hallopythonia!'"));
+                        }
+                    },
+                    { 
+                        text: '📜 Print "Ik ben een Code Krijger!"', 
+                        hint: 'print("Ik ben een Code Krijger!")', 
+                        check: (c) => {
+                            const normalized = c.toLowerCase().replace(/\s+/g, '');
+                            return normalized.includes('print') && 
+                                   (normalized.includes('codekrij') || normalized.includes('codekrijger'));
+                        }
+                    },
+                    { 
+                        text: '📜 Print "Syntax Bug verslagen!"', 
+                        hint: 'print("Syntax Bug verslagen!")', 
+                        check: (c) => {
+                            const normalized = c.toLowerCase().replace(/\s+/g, '');
+                            return normalized.includes('print') && 
+                                   (normalized.includes('syntaxbug') || normalized.includes('verslagen'));
+                        }
+                    }
                 ],
                 enemy: { name: 'Syntax Bug 🐛', hp: 90, maxHp: 90 },
                 xp: 50,
