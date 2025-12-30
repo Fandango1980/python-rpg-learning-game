@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Quest - Leer Python door te Spelen!</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .game-container { max-width: 1400px; margin: 0 auto; }
+        header { text-align: center; color: white; margin-bottom: 30px; }
+        header h1 { font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .main-content { display: grid; grid-template-columns: 280px 1fr 280px; gap: 20px; }
+        .panel { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+        h2 { color: #667eea; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+        .progress-bar { width: 100%; height: 20px; background: #f0f0f0; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.5s; }
+        #code-input { width: 100%; min-height: 150px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; background: #f8f9fa; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: bold; margin: 5px; }
+        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+        #output { background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; min-height: 100px; white-space: pre-wrap; margin-top: 15px; }
+        .lesson-item { padding: 12px; border-radius: 8px; margin: 8px 0; cursor: pointer; background: #f8f9fa; transition: all 0.3s; }
+        .lesson-item:hover:not(.locked) { background: #e9ecef; transform: translateX(5px); }
+        .lesson-item.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .lesson-item.locked { opacity: 0.5; cursor: not-allowed; }
+        .skill-badge { display: inline-block; background: #667eea; color: white; padding: 8px 15px; border-radius: 20px; margin: 5px; font-family: 'Courier New', monospace; }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        @media (max-width: 1200px) { .main-content { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>🐍 Python Quest</h1>
+            <p>Leer Python door een epische RPG te spelen!</p>
+        </header>
+
+        <div class="main-content">
+            <div class="panel">
+                <h2>🧙 Jouw Held</h2>
+                <div class="stat-item"><span>Level:</span><span id="level">1</span></div>
+                <div class="stat-item"><span>HP:</span><span id="hp">100/100</span></div>
+                <div class="stat-item"><span>XP:</span><span id="xp">0/100</span></div>
+                <div class="progress-bar"><div id="xp-bar" class="progress-fill"></div></div>
+                
+                <h2 style="margin-top: 20px;">👾 Vijand</h2>
+                <div class="stat-item"><span>Naam:</span><span id="enemy-name">Syntax Bug</span></div>
+                <div class="stat-item"><span>HP:</span><span id="enemy-hp">30/30</span></div>
+                
+                <h2 style="margin-top: 20px;">🎯 Vaardigheden</h2>
+                <div id="skills"><span class="skill-badge">print()</span></div>
+            </div>
+
+            <div>
+                <div class="panel">
+                    <h2>📖 Verhaal</h2>
+                    <p id="story">Welkom bij Python Quest! Je bent een beginnende programmeur in het magische land van Pythonia. Om een meester-programmeur te worden, moet je verschillende uitdagingen overwinnen door Python code te schrijven.</p>
+                </div>
+                
+                <div class="panel" style="margin-top: 20px;">
+                    <h2>⚔️ Uitdaging</h2>
+                    <p id="challenge" style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">Schrijf code om "Hallo Pythonia!" te printen</p>
+                    
+                    <h2 style="margin-top: 20px;">💻 Jouw Code:</h2>
+                    <textarea id="code-input" placeholder="# Schrijf hier je Python code..."></textarea>
+                    <button class="btn btn-primary" onclick="runCode()">▶️ Voer Code Uit</button>
+                    <button class="btn" onclick="showHint()">💡 Hint</button>
+                    <div id="output"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>📚 Lessen</h2>
+                <div id="lessons">
+                    <div class="lesson-item active" onclick="loadLesson(1)">1. Print Statements</div>
+                    <div class="lesson-item locked">2. Variabelen 🔒</div>
+                    <div class="lesson-item locked">3. If Statements 🔒</div>
+                    <div class="lesson-item locked">4. Loops 🔒</div>
+                    <div class="lesson-item locked">5. Functies 🔒</div>
+                    <div class="lesson-item locked">6. Lists 🔒</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let game = {
+            player: { level: 1, hp: 100, maxHp: 100, xp: 0, xpNext: 100, skills: ['print()'] },
+            currentLesson: 1,
+            enemy: { name: 'Syntax Bug', hp: 30, maxHp: 30 }
+        };
+
+        const lessons = {
+            1: { title: 'Print Statements', story: 'Je staat voor de Poort van Output. Om deze te openen, moet je de magische print() spreuk gebruiken!', challenge: 'Schrijf code om "Hallo Pythonia!" te printen', hint: 'print("Hallo Pythonia!")', check: 'print', enemy: 'Syntax Bug', enemyHp: 30, xp: 50 },
+            2: { title: 'Variabelen', story: 'Je ontmoet een wijze tovenaar die je leert over het opslaan van magische waarden!', challenge: 'Maak een variabele "naam" met jouw naam en print deze', hint: 'naam = "JouwNaam"\\nprint(naam)', check: '=', enemy: 'Memory Leak', enemyHp: 50, xp: 75 },
+            3: { title: 'If Statements', story: 'Je komt bij een kruispunt. Je moet beslissingen maken!', challenge: 'Schrijf een if statement die checkt of 15 > 10', hint: 'if 15 > 10:\\n    print("Groter!")', check: 'if', enemy: 'Logic Error', enemyHp: 70, xp: 100 },
+            4: { title: 'Loops', story: 'Je moet een brug oversteken die uit herhalende patronen bestaat!', challenge: 'Gebruik een for loop om 1 tot 5 te printen', hint: 'for i in range(1, 6):\\n    print(i)', check: 'for', enemy: 'Infinite Loop', enemyHp: 90, xp: 125 },
+            5: { title: 'Functies', story: 'Je leert de kracht van herbruikbare spreuken!', challenge: 'Maak een functie "begroet" die een naam print', hint: 'def begroet(naam):\\n    print(naam)', check: 'def', enemy: 'Recursion Dragon', enemyHp: 120, xp: 150 },
+            6: { title: 'Lists', story: 'Je vindt een schatkist vol met verzamelingen!', challenge: 'Maak een list met 3 kleuren en print de eerste', hint: 'kleuren = ["rood", "blauw", "groen"]\\nprint(kleuren[0])', check: '[', enemy: 'Index Error', enemyHp: 150, xp: 200 }
+        };
+
+        function loadLesson(num) {
+            const lesson = lessons[num];
+            if (!lesson) return;
+            game.currentLesson = num;
+            game.enemy = { name: lesson.enemy, hp: lesson.enemyHp, maxHp: lesson.enemyHp };
+            document.getElementById('story').textContent = lesson.story;
+            document.getElementById('challenge').textContent = lesson.challenge;
+            document.getElementById('enemy-name').textContent = lesson.enemy;
+            updateUI();
+        }
+
+        function runCode() {
+            const code = document.getElementById('code-input').value;
+            const lesson = lessons[game.currentLesson];
+            const output = document.getElementById('output');
+            
+            if (code.includes(lesson.check)) {
+                output.innerHTML = '<span class="success">✓ Code succesvol!</span>\\n';
+                const prints = code.match(/print\\(['\"](.+?)['\"]\\)/g);
+                if (prints) prints.forEach(p => output.innerHTML += p.match(/['\"](.+?)['\"]/)[1] + '\\n');
+                
+                const dmg = 30;
+                game.enemy.hp -= dmg;
+                output.innerHTML += `\\n⚔️ ${dmg} schade aan ${game.enemy.name}!\\n`;
+                
+                if (game.enemy.hp <= 0) {
+                    output.innerHTML += `\\n🎉 ${game.enemy.name} verslagen!\\n`;
+                    gainXP(lesson.xp);
+                    unlockNext();
+                }
+            } else {
+                output.innerHTML = '<span class="error">✗ Code bevat fouten!</span>';
+            }
+            updateUI();
+        }
+
+        function showHint() {
+            const lesson = lessons[game.currentLesson];
+            document.getElementById('output').innerHTML = `💡 Hint:\\n${lesson.hint}`;
+        }
+
+        function gainXP(xp) {
+            game.player.xp += xp;
+            while (game.player.xp >= game.player.xpNext) {
+                game.player.level++;
+                game.player.xp -= game.player.xpNext;
+                game.player.xpNext = Math.floor(game.player.xpNext * 1.5);
+                game.player.maxHp += 20;
+                game.player.hp = game.player.maxHp;
+                document.getElementById('output').innerHTML += `\\n🎊 LEVEL UP! Nu level ${game.player.level}!`;
+            }
+        }
+
+        function unlockNext() {
+            const next = game.currentLesson + 1;
+            if (lessons[next]) {
+                const items = document.querySelectorAll('.lesson-item');
+                items[next - 1].classList.remove('locked');
+                items[next - 1].onclick = () => loadLesson(next);
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('level').textContent = game.player.level;
+            document.getElementById('hp').textContent = `${game.player.hp}/${game.player.maxHp}`;
+            document.getElementById('xp').textContent = `${game.player.xp}/${game.player.xpNext}`;
+            document.getElementById('xp-bar').style.width = `${(game.player.xp / game.player.xpNext) * 100}%`;
+            document.getElementById('enemy-hp').textContent = `${Math.max(0, game.enemy.hp)}/${game.enemy.maxHp}`;
+        }
+
+        loadLesson(1);
+    </script>
+</body>
+</html>
