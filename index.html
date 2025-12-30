@@ -3,120 +3,1106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Quest - Leer Python door te Spelen!</title>
+    <title>Python Quest - Word de Held van Pythonia</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
         }
-        .game-container { max-width: 1400px; margin: 0 auto; }
-        header { text-align: center; color: white; margin-bottom: 30px; }
-        header h1 { font-size: 3em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .main-content { display: grid; grid-template-columns: 280px 1fr 280px; gap: 20px; }
-        .panel { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-        h2 { color: #667eea; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
-        .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-        .progress-bar { width: 100%; height: 20px; background: #f0f0f0; border-radius: 10px; overflow: hidden; margin-top: 10px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 0%; transition: width 0.5s; }
-        #code-input { width: 100%; min-height: 150px; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px; background: #f8f9fa; }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: bold; margin: 5px; }
-        .btn-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
-        #output { background: #1e1e1e; color: #00ff00; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; min-height: 100px; white-space: pre-wrap; margin-top: 15px; }
-        .lesson-item { padding: 12px; border-radius: 8px; margin: 8px 0; cursor: pointer; background: #f8f9fa; transition: all 0.3s; }
-        .lesson-item:hover:not(.locked) { background: #e9ecef; transform: translateX(5px); }
-        .lesson-item.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-        .lesson-item.locked { opacity: 0.5; cursor: not-allowed; }
-        .skill-badge { display: inline-block; background: #667eea; color: white; padding: 8px 15px; border-radius: 20px; margin: 5px; font-family: 'Courier New', monospace; }
-        .success { color: #28a745; font-weight: bold; }
-        .error { color: #dc3545; font-weight: bold; }
-        @media (max-width: 1200px) { .main-content { grid-template-columns: 1fr; } }
+        
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        .intro-content {
+            max-width: 800px;
+            padding: 40px;
+            text-align: center;
+            animation: slideUp 1s ease-out;
+        }
+        
+        .intro-content h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        .intro-story {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin: 30px 0;
+            text-align: left;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255,215,0,0.3);
+        }
+        
+        .intro-story p {
+            margin-bottom: 20px;
+        }
+        
+        .start-btn {
+            padding: 20px 50px;
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(245,87,108,0.4);
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(245,87,108,0.6);
+        }
+        
+        #tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        
+        .tutorial-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .tutorial-box h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .tutorial-box p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .tutorial-code {
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .next-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #fff;
+            color: #667eea;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255,255,255,0.3);
+        }
+        
+        .game-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
+        
+        header h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            color: #ffd700;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,215,0,0.3);
+            padding-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 1.1em;
+        }
+        
+        .stat-item:last-child { border-bottom: none; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+            border: 2px solid rgba(255,215,0,0.3);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(245,87,108,0.5);
+        }
+        
+        .skill-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .story-text {
+            line-height: 1.8;
+            font-size: 1.1em;
+            color: #e0e0e0;
+        }
+        
+        .challenge-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 5px 15px rgba(245,87,108,0.3);
+        }
+        
+        #code-input {
+            width: 100%;
+            min-height: 180px;
+            padding: 20px;
+            border: 2px solid rgba(255,215,0,0.3);
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            background: rgba(0,0,0,0.5);
+            color: #0f0;
+            resize: vertical;
+        }
+        
+        #code-input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+            flex: 1;
+            box-shadow: 0 5px 15px rgba(245,87,108,0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245,87,108,0.5);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-next-lesson {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(58,123,213,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-next-lesson:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(58,123,213,0.5);
+        }
+        
+        #output {
+            background: rgba(0,0,0,0.7);
+            color: #0f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            min-height: 120px;
+            white-space: pre-wrap;
+            margin-top: 15px;
+            border: 2px solid rgba(0,255,0,0.3);
+            font-size: 1.05em;
+        }
+        
+        .chapter-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 15px 0 10px 0;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chapter-header:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .chapter-header.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .chapter-lessons {
+            margin-left: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .lesson-item {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            cursor: pointer;
+            background: rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid transparent;
+            font-size: 0.95em;
+        }
+        
+        .lesson-item:hover:not(.locked) {
+            background: rgba(255,255,255,0.2);
+            transform: translateX(5px);
+            border-color: rgba(255,215,0,0.5);
+        }
+        
+        .lesson-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            font-weight: bold;
+            border-color: #ffd700;
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+        
+        .lesson-item.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .lesson-item.completed {
+            background: rgba(0,255,0,0.2);
+            border-color: rgba(0,255,0,0.3);
+        }
+
+        .lesson-item.unlocked {
+            animation: pulse 1s ease-in-out 3;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,215,0,0.6); }
+        }
+        
+        .success { color: #00ff00; font-weight: bold; text-shadow: 0 0 10px #00ff00; }
+        .error { color: #ff4444; font-weight: bold; text-shadow: 0 0 10px #ff4444; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+            50% { text-shadow: 0 0 40px rgba(255,215,0,0.8), 0 0 60px rgba(255,215,0,0.6); }
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
+    <div id="intro-screen">
+        <div class="intro-content">
+            <h1>🐍 Python Quest</h1>
+            <div class="intro-story">
+                <p><strong>📖 Het Verhaal van Pythonia</strong></p>
+                <p>In het mystieke land van <strong>Pythonia</strong> leefden de mensen eeuwenlang in vrede. Maar op een dag verschenen er vreemde monsters uit het Digitale Bos - bugs, errors en crashes die het land bedreigden.</p>
+                <p>Jij bent <strong>de Uitverkorene</strong>, een jonge held die de oude kunst van <strong>Code Magie</strong> moet leren om je dorp te beschermen.</p>
+                <p>De wijze tovenaar <strong>Pythonicus</strong> zal je door <strong>6 epische hoofdstukken</strong> leiden - van absolute beginner tot meester-programmeur!</p>
+                <p><strong>⚔️ Jouw reis:</strong></p>
+                <p>📘 <strong>Hoofdstuk 1:</strong> De Basis Spreuken<br>
+                📗 <strong>Hoofdstuk 2:</strong> Geavanceerde Technieken<br>
+                📙 <strong>Hoofdstuk 3:</strong> Data Manipulatie<br>
+                📕 <strong>Hoofdstuk 4:</strong> Objectgeoriënteerd Programmeren<br>
+                📔 <strong>Hoofdstuk 5:</strong> Foutafhandeling & Bestanden<br>
+                📓 <strong>Hoofdstuk 6:</strong> Meester Programmeur</p>
+            </div>
+            <button class="start-btn" onclick="startGame()">🎮 Begin je Avontuur!</button>
+        </div>
+    </div>
+
+    <div id="tutorial-overlay">
+        <div class="tutorial-box">
+            <h2 id="tutorial-title">🎓 Les 1: De Print Spreuk</h2>
+            <p id="tutorial-text">Welkom, jonge held! Ik ben Pythonicus, je mentor. De eerste spreuk die je moet leren is de <strong>print()</strong> spreuk. Hiermee kun je berichten tonen en de monsters verzwakken!</p>
+            <div class="tutorial-code" id="tutorial-code">print("Hallo Wereld!")</div>
+            <p id="tutorial-instruction">👆 Dit is hoe je de print spreuk gebruikt. Typ tekst tussen aanhalingstekens binnen de haakjes.</p>
+            <button class="next-btn" onclick="nextTutorial()">Volgende →</button>
+        </div>
+    </div>
+
     <div class="game-container">
         <header>
             <h1>🐍 Python Quest</h1>
-            <p>Leer Python door een epische RPG te spelen!</p>
+            <p class="subtitle">⚔️ Bescherm Pythonia met de Kracht van Code!</p>
         </header>
 
         <div class="main-content">
-            <div class="panel">
-                <h2>🧙 Jouw Held</h2>
-                <div class="stat-item"><span>Level:</span><span id="level">1</span></div>
-                <div class="stat-item"><span>HP:</span><span id="hp">100/100</span></div>
-                <div class="stat-item"><span>XP:</span><span id="xp">0/100</span></div>
-                <div class="progress-bar"><div id="xp-bar" class="progress-fill"></div></div>
+            <div>
+                <div class="panel">
+                    <h2>🧙‍♂️ Jouw Held</h2>
+                    <div class="stat-item"><span>👤 Naam:</span><span>Code Krijger</span></div>
+                    <div class="stat-item"><span>⭐ Level:</span><span id="level">1</span></div>
+                    <div class="stat-item"><span>❤️ HP:</span><span id="hp">100/100</span></div>
+                    <div class="stat-item"><span>✨ XP:</span><span id="xp">0/100</span></div>
+                    <div class="progress-bar"><div id="xp-bar" class="progress-fill"></div></div>
+                </div>
                 
-                <h2 style="margin-top: 20px;">👾 Vijand</h2>
-                <div class="stat-item"><span>Naam:</span><span id="enemy-name">Syntax Bug</span></div>
-                <div class="stat-item"><span>HP:</span><span id="enemy-hp">30/30</span></div>
+                <div class="panel">
+                    <h2>👾 Vijand</h2>
+                    <div class="stat-item"><span>Naam:</span><span id="enemy-name">-</span></div>
+                    <div class="stat-item"><span>💀 HP:</span><span id="enemy-hp">-</span></div>
+                    <div class="stat-item"><span>🎯 Aanval:</span><span id="attack-count">0/3</span></div>
+                </div>
                 
-                <h2 style="margin-top: 20px;">🎯 Vaardigheden</h2>
-                <div id="skills"><span class="skill-badge">print()</span></div>
+                <div class="panel">
+                    <h2>🎯 Geleerde Spreuken</h2>
+                    <div id="skills"></div>
+                </div>
             </div>
 
             <div>
                 <div class="panel">
-                    <h2>📖 Verhaal</h2>
-                    <p id="story">Welkom bij Python Quest! Je bent een beginnende programmeur in het magische land van Pythonia. Om een meester-programmeur te worden, moet je verschillende uitdagingen overwinnen door Python code te schrijven.</p>
+                    <h2>📖 Het Verhaal</h2>
+                    <div class="story-text" id="story"></div>
                 </div>
                 
-                <div class="panel" style="margin-top: 20px;">
-                    <h2>⚔️ Uitdaging</h2>
-                    <p id="challenge" style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">Schrijf code om "Hallo Pythonia!" te printen</p>
+                <div class="panel">
+                    <h2>⚔️ Jouw Uitdaging</h2>
+                    <div class="challenge-box" id="challenge"></div>
                     
-                    <h2 style="margin-top: 20px;">💻 Jouw Code:</h2>
-                    <textarea id="code-input" placeholder="# Schrijf hier je Python code..."></textarea>
-                    <button class="btn btn-primary" onclick="runCode()">▶️ Voer Code Uit</button>
-                    <button class="btn" onclick="showHint()">💡 Hint</button>
+                    <h2>💻 Schrijf je Code Spreuk:</h2>
+                    <textarea id="code-input" placeholder="# Typ hier je Python code..."></textarea>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="runCode()">▶️ Voer Spreuk Uit!</button>
+                        <button class="btn btn-secondary" onclick="showHint()">💡 Vraag Hulp</button>
+                    </div>
                     <div id="output"></div>
+                    <div id="next-lesson-container"></div>
                 </div>
             </div>
 
-            <div class="panel">
-                <h2>📚 Lessen</h2>
-                <div id="lessons">
-                    <div class="lesson-item active" onclick="loadLesson(1)">1. Print Statements</div>
-                    <div class="lesson-item locked">2. Variabelen 🔒</div>
-                    <div class="lesson-item locked">3. If Statements 🔒</div>
-                    <div class="lesson-item locked">4. Loops 🔒</div>
-                    <div class="lesson-item locked">5. Functies 🔒</div>
-                    <div class="lesson-item locked">6. Lists 🔒</div>
+            <div>
+                <div class="panel">
+                    <h2>📚 Jouw Reis</h2>
+                    <div id="lessons"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let game = {
-            player: { level: 1, hp: 100, maxHp: 100, xp: 0, xpNext: 100, skills: ['print()'] },
-            currentLesson: 1,
-            enemy: { name: 'Syntax Bug', hp: 30, maxHp: 30 }
-        };
-
+        // LESSONS DATA - Alle 36 lessen inline
         const lessons = {
-            1: { title: 'Print Statements', story: 'Je staat voor de Poort van Output. Om deze te openen, moet je de magische print() spreuk gebruiken!', challenge: 'Schrijf code om "Hallo Pythonia!" te printen', hint: 'print("Hallo Pythonia!")', check: 'print', enemy: 'Syntax Bug', enemyHp: 30, xp: 50 },
-            2: { title: 'Variabelen', story: 'Je ontmoet een wijze tovenaar die je leert over het opslaan van magische waarden!', challenge: 'Maak een variabele "naam" met jouw naam en print deze', hint: 'naam = "JouwNaam"\\nprint(naam)', check: '=', enemy: 'Memory Leak', enemyHp: 50, xp: 75 },
-            3: { title: 'If Statements', story: 'Je komt bij een kruispunt. Je moet beslissingen maken!', challenge: 'Schrijf een if statement die checkt of 15 > 10', hint: 'if 15 > 10:\\n    print("Groter!")', check: 'if', enemy: 'Logic Error', enemyHp: 70, xp: 100 },
-            4: { title: 'Loops', story: 'Je moet een brug oversteken die uit herhalende patronen bestaat!', challenge: 'Gebruik een for loop om 1 tot 5 te printen', hint: 'for i in range(1, 6):\\n    print(i)', check: 'for', enemy: 'Infinite Loop', enemyHp: 90, xp: 125 },
-            5: { title: 'Functies', story: 'Je leert de kracht van herbruikbare spreuken!', challenge: 'Maak een functie "begroet" die een naam print', hint: 'def begroet(naam):\\n    print(naam)', check: 'def', enemy: 'Recursion Dragon', enemyHp: 120, xp: 150 },
-            6: { title: 'Lists', story: 'Je vindt een schatkist vol met verzamelingen!', challenge: 'Maak een list met 3 kleuren en print de eerste', hint: 'kleuren = ["rood", "blauw", "groen"]\\nprint(kleuren[0])', check: '[', enemy: 'Index Error', enemyHp: 150, xp: 200 }
+            // HOOFDSTUK 1: BASIS SPREUKEN (Beginner)
+            '1-1': {
+                title: '🎯 Print Spreuk',
+                story: '🧙‍♂️ <strong>Pythonicus spreekt:</strong><br><br>"Welkom! De <strong>Syntax Bug</strong> is je eerste vijand. De <strong>print()</strong> spreuk is de basis van alle code magie!"',
+                challenges: [
+                    { text: '📜 Print "Hallo Pythonia!"', hint: 'print("Hallo Pythonia!")', check: (c) => c.toLowerCase().includes('print') && c.toLowerCase().includes('hallopythonia') },
+                    { text: '📜 Print "Ik ben een Code Krijger!"', hint: 'print("Ik ben een Code Krijger!")', check: (c) => c.toLowerCase().includes('print') && c.toLowerCase().includes('codekrij') },
+                    { text: '📜 Print "Syntax Bug verslagen!"', hint: 'print("Syntax Bug verslagen!")', check: (c) => c.toLowerCase().includes('print') && (c.toLowerCase().includes('syntaxbug') || c.toLowerCase().includes('verslagen')) }
+                ],
+                enemy: { name: 'Syntax Bug 🐛', hp: 90, maxHp: 90 },
+                xp: 50,
+                skill: 'print()'
+            },
+            '1-2': {
+                title: '📦 Variabelen',
+                story: '🧙‍♂️ "De <strong>Memory Leak</strong>! Leer over <strong>variabelen</strong> - magische dozen voor informatie!"',
+                challenges: [
+                    { text: '📜 Maak variabele "naam" en print deze', hint: 'naam = "Held"\nprint(naam)', check: (c) => /naam\s*=/.test(c) && /print\s*\(\s*naam\s*\)/.test(c) },
+                    { text: '📜 Maak variabele "wapen" met "zwaard"', hint: 'wapen = "zwaard"\nprint(wapen)', check: (c) => /wapen\s*=/.test(c) && /print\s*\(\s*wapen\s*\)/.test(c) },
+                    { text: '📜 Maak variabele "kracht" met "100"', hint: 'kracht = "100"\nprint(kracht)', check: (c) => /kracht\s*=/.test(c) && /print\s*\(\s*kracht\s*\)/.test(c) }
+                ],
+                enemy: { name: 'Memory Leak 💾', hp: 90, maxHp: 90 },
+                xp: 75,
+                skill: 'variabelen'
+            },
+            '1-3': {
+                title: '🔀 If Statements',
+                story: '🧙‍♂️ "De <strong>Logic Error</strong>! Gebruik <strong>if statements</strong> voor beslissingen!"',
+                challenges: [
+                    { text: '📜 Check of 15 > 10, print "Aanval!"', hint: 'if 15 > 10:\n    print("Aanval!")', check: (c) => c.includes('if') && c.includes('15') && c.includes('10') && c.includes('>') },
+                    { text: '📜 Check of 20 > 5, print "Sterk!"', hint: 'if 20 > 5:\n    print("Sterk!")', check: (c) => c.includes('if') && c.includes('20') && c.includes('5') && c.includes('>') },
+                    { text: '📜 Check of 100 > 50, print "Overwinning!"', hint: 'if 100 > 50:\n    print("Overwinning!")', check: (c) => c.includes('if') && c.includes('100') && c.includes('50') && c.includes('>') }
+                ],
+                enemy: { name: 'Logic Error ⚠️', hp: 90, maxHp: 90 },
+                xp: 100,
+                skill: 'if/else'
+            },
+            '1-4': {
+                title: '🔁 For Loops',
+                story: '🧙‍♂️ "Het <strong>Infinite Loop Monster</strong>! Gebruik <strong>for loops</strong> voor herhaling!"',
+                challenges: [
+                    { text: '📜 Loop: print getallen 1 tot 5', hint: 'for i in range(1, 6):\n    print(i)', check: (c) => c.includes('for') && c.includes('range') && c.includes('print') },
+                    { text: '📜 Loop: print getallen 0 tot 3', hint: 'for i in range(4):\n    print(i)', check: (c) => c.includes('for') && c.includes('range') && c.includes('print') },
+                    { text: '📜 Loop: print getallen 10 tot 15', hint: 'for i in range(10, 16):\n    print(i)', check: (c) => c.includes('for') && c.includes('range') && c.includes('print') }
+                ],
+                enemy: { name: 'Infinite Loop Monster ♾️', hp: 90, maxHp: 90 },
+                xp: 125,
+                skill: 'for loops'
+            },
+            '1-5': {
+                title: '⚡ Functies',
+                story: '🧙‍♂️ "De <strong>Recursion Dragon</strong>! Leer <strong>functies</strong> - herbruikbare spreuken!"',
+                challenges: [
+                    { text: '📜 Functie "aanval" die "Draak!" print', hint: 'def aanval():\n    print("Draak!")\naanval()', check: (c) => c.includes('def') && c.includes('aanval') && c.includes('aanval()') },
+                    { text: '📜 Functie "verdedig" die "Schild!" print', hint: 'def verdedig():\n    print("Schild!")\nverdedig()', check: (c) => c.includes('def') && c.includes('verdedig') && c.includes('verdedig()') },
+                    { text: '📜 Functie "overwin" die "Verslagen!" print', hint: 'def overwin():\n    print("Verslagen!")\noverwin()', check: (c) => c.includes('def') && c.includes('overwin') && c.includes('overwin()') }
+                ],
+                enemy: { name: 'Recursion Dragon 🐉', hp: 90, maxHp: 90 },
+                xp: 150,
+                skill: 'functies'
+            },
+            '1-6': {
+                title: '📋 Lists',
+                story: '🧙‍♂️ "De <strong>Index Error Beast</strong>! Gebruik <strong>lists</strong> voor verzamelingen!"',
+                challenges: [
+                    { text: '📜 List "wapens" met 3 items, print eerste', hint: 'wapens = ["zwaard", "boog", "staf"]\nprint(wapens[0])', check: (c) => c.includes('wapens') && c.includes('[') && c.includes('wapens[0]') },
+                    { text: '📜 List "spreuken" met 3 items, print tweede', hint: 'spreuken = ["vuur", "ijs", "bliksem"]\nprint(spreuken[1])', check: (c) => c.includes('spreuken') && c.includes('[') && c.includes('spreuken[1]') },
+                    { text: '📜 List "helden" met 3 items, print derde', hint: 'helden = ["Arthur", "Merlin", "Lancelot"]\nprint(helden[2])', check: (c) => c.includes('helden') && c.includes('[') && c.includes('helden[2]') }
+                ],
+                enemy: { name: 'Index Error Beast 👹', hp: 90, maxHp: 90 },
+                xp: 200,
+                skill: 'lists'
+            },
+
+            // HOOFDSTUK 2: GEAVANCEERDE TECHNIEKEN (Intermediate)
+            '2-1': {
+                title: '📚 Dictionaries',
+                story: '🧙‍♂️ "De <strong>Key Error Demon</strong>! Leer <strong>dictionaries</strong> - key-value paren!"',
+                challenges: [
+                    { text: '📜 Dictionary "held" met key "naam", print waarde', hint: 'held = {"naam": "Arthur"}\nprint(held["naam"])', check: (c) => c.includes('{') && c.includes(':') && c.includes('held[') },
+                    { text: '📜 Dictionary "stats" met "hp": 100, print hp', hint: 'stats = {"hp": 100}\nprint(stats["hp"])', check: (c) => c.includes('{') && c.includes(':') && c.includes('stats[') },
+                    { text: '📜 Dictionary "item" met 2 keys, print beide', hint: 'item = {"naam": "zwaard", "schade": 50}\nprint(item["naam"])\nprint(item["schade"])', check: (c) => c.includes('{') && c.includes(':') && c.includes('item[') }
+                ],
+                enemy: { name: 'Key Error Demon 🔑', hp: 90, maxHp: 90 },
+                xp: 250,
+                skill: 'dictionaries'
+            },
+            '2-2': {
+                title: '✂️ String Methods',
+                story: '🧙‍♂️ "De <strong>String Manipulator</strong>! Beheers <strong>string methods</strong>!"',
+                challenges: [
+                    { text: '📜 Maak "python" hoofdletters met .upper()', hint: 'tekst = "python"\nprint(tekst.upper())', check: (c) => c.includes('.upper()') },
+                    { text: '📜 Vervang "bug" met "feature" in tekst', hint: 'tekst = "Dit is een bug"\nprint(tekst.replace("bug", "feature"))', check: (c) => c.includes('.replace(') },
+                    { text: '📜 Split "a,b,c" op komma', hint: 'tekst = "a,b,c"\nprint(tekst.split(","))', check: (c) => c.includes('.split(') }
+                ],
+                enemy: { name: 'String Manipulator 📝', hp: 90, maxHp: 90 },
+                xp: 275,
+                skill: 'string methods'
+            },
+            '2-3': {
+                title: '🔢 Math Operations',
+                story: '🧙‍♂️ "De <strong>Calculation Chaos</strong>! Beheers <strong>wiskunde</strong>!"',
+                challenges: [
+                    { text: '📜 Bereken 10 ** 2 (macht) en print', hint: 'resultaat = 10 ** 2\nprint(resultaat)', check: (c) => c.includes('**') && c.includes('print') },
+                    { text: '📜 Bereken 17 % 5 (modulo) en print', hint: 'resultaat = 17 % 5\nprint(resultaat)', check: (c) => c.includes('%') && c.includes('print') },
+                    { text: '📜 Bereken 15 // 4 (floor division) en print', hint: 'resultaat = 15 // 4\nprint(resultaat)', check: (c) => c.includes('//') && c.includes('print') }
+                ],
+                enemy: { name: 'Calculation Chaos 🧮', hp: 90, maxHp: 90 },
+                xp: 300,
+                skill: 'math operations'
+            },
+            '2-4': {
+                title: '⌨️ Input Function',
+                story: '🧙‍♂️ "De <strong>Input Interceptor</strong>! Leer <strong>input()</strong> voor gebruikersinvoer!"',
+                challenges: [
+                    { text: '📜 Gebruik input() om naam te vragen', hint: 'naam = input("Wat is je naam? ")\nprint(naam)', check: (c) => c.includes('input(') },
+                    { text: '📜 Vraag leeftijd en print deze', hint: 'leeftijd = input("Wat is je leeftijd? ")\nprint(leeftijd)', check: (c) => c.includes('input(') && c.includes('print') },
+                    { text: '📜 Vraag kleur en print "Mijn kleur is [kleur]"', hint: 'kleur = input("Favoriete kleur? ")\nprint("Mijn kleur is " + kleur)', check: (c) => c.includes('input(') && c.includes('print') }
+                ],
+                enemy: { name: 'Input Interceptor ⌨️', hp: 90, maxHp: 90 },
+                xp: 325,
+                skill: 'input()'
+            },
+            '2-5': {
+                title: '🔄 While Loops',
+                story: '🧙‍♂️ "De <strong>Eternal Looper</strong>! Beheers <strong>while loops</strong>!"',
+                challenges: [
+                    { text: '📜 While loop: tel van 0 tot 3', hint: 'i = 0\nwhile i < 3:\n    print(i)\n    i += 1', check: (c) => c.includes('while') && c.includes('<') },
+                    { text: '📜 While loop met teller tot 5', hint: 'i = 0\nwhile i < 5:\n    print(i)\n    i += 1', check: (c) => c.includes('while') && c.includes('+=') },
+                    { text: '📜 While loop: tel terug van 5 naar 1', hint: 'i = 5\nwhile i > 0:\n    print(i)\n    i -= 1', check: (c) => c.includes('while') && c.includes('>') && c.includes('-=') }
+                ],
+                enemy: { name: 'Eternal Looper 🌀', hp: 90, maxHp: 90 },
+                xp: 350,
+                skill: 'while loops'
+            },
+            '2-6': {
+                title: '⚡ List Comprehension',
+                story: '🧙‍♂️ "De <strong>Comprehension Wizard</strong>! Leer <strong>list comprehension</strong>!"',
+                challenges: [
+                    { text: '📜 Maak list met kwadraten van 0-4', hint: 'kwadraten = [x**2 for x in range(5)]\nprint(kwadraten)', check: (c) => c.includes('[') && c.includes('for') && c.includes('in') && c.includes(']') },
+                    { text: '📜 Maak list met even getallen 0-10', hint: 'even = [x for x in range(11) if x % 2 == 0]\nprint(even)', check: (c) => c.includes('[') && c.includes('for') && c.includes('if') },
+                    { text: '📜 Maak list met "x" * 3 voor x in [1,2,3]', hint: 'result = [x * 3 for x in [1,2,3]]\nprint(result)', check: (c) => c.includes('[') && c.includes('for') && c.includes('*') }
+                ],
+                enemy: { name: 'Comprehension Wizard 🧙', hp: 90, maxHp: 90 },
+                xp: 400,
+                skill: 'list comprehension'
+            },
+
+            // HOOFDSTUK 3: DATA MANIPULATIE (Intermediate+)
+            '3-1': {
+                title: '🎭 Tuples',
+                story: '🧙‍♂️ "De <strong>Immutable Guardian</strong>! Leer <strong>tuples</strong> - onveranderlijke lijsten!"',
+                challenges: [
+                    { text: '📜 Maak tuple met 3 getallen, print eerste', hint: 'coords = (10, 20, 30)\nprint(coords[0])', check: (c) => c.includes('(') && c.includes(',') && c.includes(')') && c.includes('[0]') },
+                    { text: '📜 Tuple met naam en leeftijd, print beide', hint: 'persoon = ("Jan", 25)\nprint(persoon[0])\nprint(persoon[1])', check: (c) => c.includes('(') && c.includes(',') && c.includes(')') },
+                    { text: '📜 Tuple unpacking: (a, b) = (1, 2)', hint: '(a, b) = (1, 2)\nprint(a)\nprint(b)', check: (c) => c.includes('(') && c.includes('=') && c.includes(',') }
+                ],
+                enemy: { name: 'Immutable Guardian 🛡️', hp: 90, maxHp: 90 },
+                xp: 450,
+                skill: 'tuples'
+            },
+            '3-2': {
+                title: '🎲 Sets',
+                story: '🧙‍♂️ "De <strong>Unique Enforcer</strong>! Beheers <strong>sets</strong> - unieke verzamelingen!"',
+                challenges: [
+                    { text: '📜 Maak set met {1,2,3}, voeg 4 toe', hint: 'nummers = {1, 2, 3}\nnummers.add(4)\nprint(nummers)', check: (c) => c.includes('{') && c.includes('.add(') },
+                    { text: '📜 Maak 2 sets, vind union met |', hint: 'a = {1, 2}\nb = {2, 3}\nprint(a | b)', check: (c) => c.includes('{') && c.includes('|') },
+                    { text: '📜 Maak 2 sets, vind intersection met &', hint: 'a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a & b)', check: (c) => c.includes('{') && c.includes('&') }
+                ],
+                enemy: { name: 'Unique Enforcer 🎯', hp: 90, maxHp: 90 },
+                xp: 475,
+                skill: 'sets'
+            },
+            '3-3': {
+                title: '✂️ Slicing',
+                story: '🧙‍♂️ "De <strong>Slice Master</strong>! Leer <strong>slicing</strong> - delen van data!"',
+                challenges: [
+                    { text: '📜 List [1,2,3,4,5], print eerste 3', hint: 'nums = [1,2,3,4,5]\nprint(nums[:3])', check: (c) => c.includes('[') && c.includes(':') && c.includes(']') },
+                    { text: '📜 String "Python", print laatste 3 letters', hint: 'tekst = "Python"\nprint(tekst[-3:])', check: (c) => c.includes('[-') && c.includes(':]') },
+                    { text: '📜 List, print elke 2e element', hint: 'nums = [0,1,2,3,4,5]\nprint(nums[::2])', check: (c) => c.includes('[::') }
+                ],
+                enemy: { name: 'Slice Master ✂️', hp: 90, maxHp: 90 },
+                xp: 500,
+                skill: 'slicing'
+            },
+            '3-4': {
+                title: '📊 Sorting',
+                story: '🧙‍♂️ "De <strong>Order Keeper</strong>! Beheers <strong>sorting</strong>!"',
+                challenges: [
+                    { text: '📜 Sorteer [3,1,4,1,5] met sorted()', hint: 'nums = [3,1,4,1,5]\nprint(sorted(nums))', check: (c) => c.includes('sorted(') },
+                    { text: '📜 Sorteer list omgekeerd met reverse=True', hint: 'nums = [3,1,4]\nprint(sorted(nums, reverse=True))', check: (c) => c.includes('sorted(') && c.includes('reverse') },
+                    { text: '📜 Sorteer strings op lengte met key=len', hint: 'woorden = ["aap", "noot", "mies"]\nprint(sorted(woorden, key=len))', check: (c) => c.includes('sorted(') && c.includes('key=') }
+                ],
+                enemy: { name: 'Order Keeper 📊', hp: 90, maxHp: 90 },
+                xp: 525,
+                skill: 'sorting'
+            },
+            '3-5': {
+                title: '🎯 Lambda Functions',
+                story: '🧙‍♂️ "De <strong>Anonymous Caster</strong>! Leer <strong>lambda</strong> - korte functies!"',
+                challenges: [
+                    { text: '📜 Lambda die x * 2 doet', hint: 'dubbel = lambda x: x * 2\nprint(dubbel(5))', check: (c) => c.includes('lambda') && c.includes(':') },
+                    { text: '📜 Lambda die 2 getallen optelt', hint: 'som = lambda a, b: a + b\nprint(som(3, 4))', check: (c) => c.includes('lambda') && c.includes(',') && c.includes(':') },
+                    { text: '📜 Lambda met if: even of oneven', hint: 'check = lambda x: "even" if x % 2 == 0 else "oneven"\nprint(check(4))', check: (c) => c.includes('lambda') && c.includes('if') && c.includes('else') }
+                ],
+                enemy: { name: 'Anonymous Caster 🎭', hp: 90, maxHp: 90 },
+                xp: 550,
+                skill: 'lambda'
+            },
+            '3-6': {
+                title: '🗺️ Map & Filter',
+                story: '🧙‍♂️ "De <strong>Data Transformer</strong>! Beheers <strong>map() en filter()</strong>!"',
+                challenges: [
+                    { text: '📜 Map: verdubbel alle getallen in list', hint: 'nums = [1,2,3]\nresult = list(map(lambda x: x*2, nums))\nprint(result)', check: (c) => c.includes('map(') && c.includes('lambda') },
+                    { text: '📜 Filter: alleen even getallen', hint: 'nums = [1,2,3,4,5]\nresult = list(filter(lambda x: x%2==0, nums))\nprint(result)', check: (c) => c.includes('filter(') && c.includes('lambda') },
+                    { text: '📜 Map + Filter: kwadraat van even getallen', hint: 'nums = [1,2,3,4]\neven = filter(lambda x: x%2==0, nums)\nresult = list(map(lambda x: x**2, even))\nprint(result)', check: (c) => c.includes('map(') && c.includes('filter(') }
+                ],
+                enemy: { name: 'Data Transformer 🗺️', hp: 90, maxHp: 90 },
+                xp: 600,
+                skill: 'map/filter'
+            },
+
+            // HOOFDSTUK 4: OOP (Object Oriented Programming)
+            '4-1': {
+                title: '🏛️ Classes Basis',
+                story: '🧙‍♂️ "De <strong>Class Constructor</strong>! Leer <strong>classes</strong> - blauwdrukken voor objecten!"',
+                challenges: [
+                    { text: '📜 Maak class Held met __init__', hint: 'class Held:\n    def __init__(self, naam):\n        self.naam = naam\nh = Held("Arthur")\nprint(h.naam)', check: (c) => c.includes('class') && c.includes('__init__') && c.includes('self') },
+                    { text: '📜 Class met 2 attributen: naam en hp', hint: 'class Held:\n    def __init__(self, naam, hp):\n        self.naam = naam\n        self.hp = hp\nh = Held("Merlin", 100)\nprint(h.hp)', check: (c) => c.includes('class') && c.includes('self.') },
+                    { text: '📜 Maak 2 objecten van je class', hint: 'class Held:\n    def __init__(self, naam):\n        self.naam = naam\nh1 = Held("A")\nh2 = Held("B")\nprint(h1.naam, h2.naam)', check: (c) => c.includes('class') && c.includes('=') && c.includes('(') }
+                ],
+                enemy: { name: 'Class Constructor 🏛️', hp: 90, maxHp: 90 },
+                xp: 650,
+                skill: 'classes'
+            },
+            '4-2': {
+                title: '⚙️ Methods',
+                story: '🧙‍♂️ "De <strong>Method Master</strong>! Leer <strong>methods</strong> - functies in classes!"',
+                challenges: [
+                    { text: '📜 Class met method aanval()', hint: 'class Held:\n    def aanval(self):\n        print("Aanval!")\nh = Held()\nh.aanval()', check: (c) => c.includes('def') && c.includes('self') && c.includes('.') },
+                    { text: '📜 Method die self.naam gebruikt', hint: 'class Held:\n    def __init__(self, naam):\n        self.naam = naam\n    def groet(self):\n        print("Hallo " + self.naam)\nh = Held("Jan")\nh.groet()', check: (c) => c.includes('self.naam') && c.includes('def') },
+                    { text: '📜 Method met parameter: schade(dmg)', hint: 'class Held:\n    def schade(self, dmg):\n        print(f"Schade: {dmg}")\nh = Held()\nh.schade(50)', check: (c) => c.includes('def') && c.includes('self,') }
+                ],
+                enemy: { name: 'Method Master ⚙️', hp: 90, maxHp: 90 },
+                xp: 675,
+                skill: 'methods'
+            },
+            '4-3': {
+                title: '👨‍👦 Inheritance',
+                story: '🧙‍♂️ "De <strong>Heritage Guardian</strong>! Leer <strong>inheritance</strong> - overerving!"',
+                challenges: [
+                    { text: '📜 Class Krijger extends Held', hint: 'class Held:\n    pass\nclass Krijger(Held):\n    pass\nk = Krijger()\nprint("OK")', check: (c) => c.includes('class') && c.includes('(') && c.includes('):') },
+                    { text: '📜 Child class met eigen method', hint: 'class Held:\n    pass\nclass Krijger(Held):\n    def aanval(self):\n        print("Zwaard!")\nk = Krijger()\nk.aanval()', check: (c) => c.includes('class') && c.includes('(') && c.includes('def') },
+                    { text: '📜 Gebruik super() in child class', hint: 'class Held:\n    def __init__(self, naam):\n        self.naam = naam\nclass Krijger(Held):\n    def __init__(self, naam, wapen):\n        super().__init__(naam)\n        self.wapen = wapen\nk = Krijger("A", "Zwaard")\nprint(k.naam)', check: (c) => c.includes('super()') }
+                ],
+                enemy: { name: 'Heritage Guardian 👨‍👦', hp: 90, maxHp: 90 },
+                xp: 700,
+                skill: 'inheritance'
+            },
+            '4-4': {
+                title: '🎨 Properties',
+                story: '🧙‍♂️ "De <strong>Property Keeper</strong>! Leer <strong>@property</strong> decorators!"',
+                challenges: [
+                    { text: '📜 Maak @property voor naam', hint: 'class Held:\n    def __init__(self):\n        self._naam = "Jan"\n    @property\n    def naam(self):\n        return self._naam\nh = Held()\nprint(h.naam)', check: (c) => c.includes('@property') },
+                    { text: '📜 Property met setter', hint: 'class Held:\n    def __init__(self):\n        self._hp = 100\n    @property\n    def hp(self):\n        return self._hp\n    @hp.setter\n    def hp(self, value):\n        self._hp = value\nh = Held()\nh.hp = 50\nprint(h.hp)', check: (c) => c.includes('@property') && c.includes('.setter') },
+                    { text: '📜 Computed property: volle_naam', hint: 'class Persoon:\n    def __init__(self, voor, achter):\n        self.voor = voor\n        self.achter = achter\n    @property\n    def volle_naam(self):\n        return self.voor + " " + self.achter\np = Persoon("Jan", "Jansen")\nprint(p.volle_naam)', check: (c) => c.includes('@property') && c.includes('return') }
+                ],
+                enemy: { name: 'Property Keeper 🎨', hp: 90, maxHp: 90 },
+                xp: 725,
+                skill: 'properties'
+            },
+            '4-5': {
+                title: '🎭 Polymorphism',
+                story: '🧙‍♂️ "De <strong>Shape Shifter</strong>! Beheers <strong>polymorphism</strong>!"',
+                challenges: [
+                    { text: '📜 2 classes met zelfde method naam', hint: 'class Hond:\n    def geluid(self):\n        print("Woof")\nclass Kat:\n    def geluid(self):\n        print("Miauw")\nh = Hond()\nk = Kat()\nh.geluid()\nk.geluid()', check: (c) => c.includes('class') && c.includes('def geluid') },
+                    { text: '📜 Override method in child class', hint: 'class Dier:\n    def geluid(self):\n        print("...")\nclass Hond(Dier):\n    def geluid(self):\n        print("Woof")\nh = Hond()\nh.geluid()', check: (c) => c.includes('class') && c.includes('(') && c.includes('def geluid') },
+                    { text: '📜 Loop door verschillende objecten', hint: 'class Hond:\n    def geluid(self):\n        print("Woof")\nclass Kat:\n    def geluid(self):\n        print("Miauw")\ndieren = [Hond(), Kat()]\nfor d in dieren:\n    d.geluid()', check: (c) => c.includes('for') && c.includes('.geluid()') }
+                ],
+                enemy: { name: 'Shape Shifter 🎭', hp: 90, maxHp: 90 },
+                xp: 750,
+                skill: 'polymorphism'
+            },
+            '4-6': {
+                title: '🔒 Encapsulation',
+                story: '🧙‍♂️ "De <strong>Privacy Guardian</strong>! Leer <strong>encapsulation</strong> - private attributen!"',
+                challenges: [
+                    { text: '📜 Private attribuut met __', hint: 'class BankAccount:\n    def __init__(self):\n        self.__saldo = 1000\n    def get_saldo(self):\n        return self.__saldo\nb = BankAccount()\nprint(b.get_saldo())', check: (c) => c.includes('__') && c.includes('self.__') },
+                    { text: '📜 Private method __bereken()', hint: 'class Calc:\n    def __bereken(self, x):\n        return x * 2\n    def resultaat(self, x):\n        return self.__bereken(x)\nc = Calc()\nprint(c.resultaat(5))', check: (c) => c.includes('def __') && c.includes('self.__') },
+                    { text: '📜 Getter en setter voor private var', hint: 'class Persoon:\n    def __init__(self):\n        self.__leeftijd = 0\n    def get_leeftijd(self):\n        return self.__leeftijd\n    def set_leeftijd(self, l):\n        self.__leeftijd = l\np = Persoon()\np.set_leeftijd(25)\nprint(p.get_leeftijd())', check: (c) => c.includes('self.__') && c.includes('def get_') && c.includes('def set_') }
+                ],
+                enemy: { name: 'Privacy Guardian 🔒', hp: 90, maxHp: 90 },
+                xp: 800,
+                skill: 'encapsulation'
+            },
+
+            // HOOFDSTUK 5: FOUTAFHANDELING & BESTANDEN (Advanced)
+            '5-1': {
+                title: '🛡️ Try/Except',
+                story: '🧙‍♂️ "De <strong>Error Handler</strong>! Leer <strong>try/except</strong> voor foutafhandeling!"',
+                challenges: [
+                    { text: '📜 Try/except voor ZeroDivisionError', hint: 'try:\n    x = 10 / 0\nexcept ZeroDivisionError:\n    print("Kan niet delen door 0")', check: (c) => c.includes('try:') && c.includes('except') },
+                    { text: '📜 Try/except met else block', hint: 'try:\n    x = 10 / 2\nexcept:\n    print("Fout")\nelse:\n    print("Gelukt!")', check: (c) => c.includes('try:') && c.includes('except') && c.includes('else:') },
+                    { text: '📜 Try/except/finally', hint: 'try:\n    x = 10 / 2\nexcept:\n    print("Fout")\nfinally:\n    print("Klaar")', check: (c) => c.includes('try:') && c.includes('finally:') }
+                ],
+                enemy: { name: 'Error Handler 🛡️', hp: 90, maxHp: 90 },
+                xp: 850,
+                skill: 'try/except'
+            },
+            '5-2': {
+                title: '📖 File Reading',
+                story: '🧙‍♂️ "De <strong>File Reader</strong>! Leer bestanden <strong>lezen</strong>!"',
+                challenges: [
+                    { text: '📜 Open file met open() en read()', hint: 'with open("test.txt", "r") as f:\n    inhoud = f.read()\n    print(inhoud)', check: (c) => c.includes('open(') && c.includes('"r"') },
+                    { text: '📜 Lees file regel voor regel', hint: 'with open("test.txt", "r") as f:\n    for regel in f:\n        print(regel)', check: (c) => c.includes('open(') && c.includes('for') && c.includes('in f') },
+                    { text: '📜 Gebruik readlines()', hint: 'with open("test.txt", "r") as f:\n    regels = f.readlines()\n    print(regels)', check: (c) => c.includes('.readlines()') }
+                ],
+                enemy: { name: 'File Reader 📖', hp: 90, maxHp: 90 },
+                xp: 875,
+                skill: 'file reading'
+            },
+            '5-3': {
+                title: '✍️ File Writing',
+                story: '🧙‍♂️ "De <strong>File Writer</strong>! Leer bestanden <strong>schrijven</strong>!"',
+                challenges: [
+                    { text: '📜 Schrijf naar file met "w" mode', hint: 'with open("output.txt", "w") as f:\n    f.write("Hallo!")\nprint("Geschreven")', check: (c) => c.includes('open(') && c.includes('"w"') && c.includes('.write(') },
+                    { text: '📜 Append naar file met "a" mode', hint: 'with open("output.txt", "a") as f:\n    f.write("Meer tekst")\nprint("Toegevoegd")', check: (c) => c.includes('"a"') && c.includes('.write(') },
+                    { text: '📜 Schrijf meerdere regels met writelines()', hint: 'regels = ["Regel 1\\n", "Regel 2\\n"]\nwith open("output.txt", "w") as f:\n    f.writelines(regels)\nprint("Klaar")', check: (c) => c.includes('.writelines(') }
+                ],
+                enemy: { name: 'File Writer ✍️', hp: 90, maxHp: 90 },
+                xp: 900,
+                skill: 'file writing'
+            },
+            '5-4': {
+                title: '📦 JSON',
+                story: '🧙‍♂️ "De <strong>JSON Parser</strong>! Beheers <strong>JSON</strong> data!"',
+                challenges: [
+                    { text: '📜 Import json en gebruik json.dumps()', hint: 'import json\ndata = {"naam": "Jan"}\njson_str = json.dumps(data)\nprint(json_str)', check: (c) => c.includes('import json') && c.includes('json.dumps(') },
+                    { text: '📜 Parse JSON string met json.loads()', hint: 'import json\njson_str = \'{"naam": "Jan"}\'\ndata = json.loads(json_str)\nprint(data["naam"])', check: (c) => c.includes('json.loads(') },
+                    { text: '📜 Schrijf dict naar JSON file', hint: 'import json\ndata = {"naam": "Jan", "leeftijd": 25}\nwith open("data.json", "w") as f:\n    json.dump(data, f)\nprint("Opgeslagen")', check: (c) => c.includes('json.dump(') && c.includes('open(') }
+                ],
+                enemy: { name: 'JSON Parser 📦', hp: 90, maxHp: 90 },
+                xp: 925,
+                skill: 'JSON'
+            },
+            '5-5': {
+                title: '📊 CSV Files',
+                story: '🧙‍♂️ "De <strong>CSV Master</strong>! Leer werken met <strong>CSV</strong> bestanden!"',
+                challenges: [
+                    { text: '📜 Import csv en lees CSV file', hint: 'import csv\nwith open("data.csv", "r") as f:\n    reader = csv.reader(f)\n    for row in reader:\n        print(row)', check: (c) => c.includes('import csv') && c.includes('csv.reader(') },
+                    { text: '📜 Schrijf naar CSV met csv.writer()', hint: 'import csv\nwith open("output.csv", "w") as f:\n    writer = csv.writer(f)\n    writer.writerow(["Naam", "Leeftijd"])\nprint("Geschreven")', check: (c) => c.includes('csv.writer(') && c.includes('.writerow(') },
+                    { text: '📜 Gebruik DictReader voor CSV', hint: 'import csv\nwith open("data.csv", "r") as f:\n    reader = csv.DictReader(f)\n    for row in reader:\n        print(row)\nprint("Klaar")', check: (c) => c.includes('csv.DictReader(') }
+                ],
+                enemy: { name: 'CSV Master 📊', hp: 90, maxHp: 90 },
+                xp: 950,
+                skill: 'CSV'
+            },
+            '5-6': {
+                title: '⚠️ Custom Exceptions',
+                story: '🧙‍♂️ "De <strong>Exception Crafter</strong>! Maak je eigen <strong>exceptions</strong>!"',
+                challenges: [
+                    { text: '📜 Maak custom exception class', hint: 'class MijnFout(Exception):\n    pass\ntry:\n    raise MijnFout("Oeps")\nexcept MijnFout as e:\n    print(e)', check: (c) => c.includes('class') && c.includes('(Exception)') && c.includes('raise') },
+                    { text: '📜 Exception met custom message', hint: 'class TeHoogError(Exception):\n    def __init__(self, waarde):\n        self.waarde = waarde\ntry:\n    raise TeHoogError(100)\nexcept TeHoogError as e:\n    print(f"Te hoog: {e.waarde}")', check: (c) => c.includes('class') && c.includes('Exception') && c.includes('__init__') },
+                    { text: '📜 Gebruik custom exception in functie', hint: 'class NegatiefError(Exception):\n    pass\ndef check(x):\n    if x < 0:\n        raise NegatiefError("Negatief!")\ntry:\n    check(-5)\nexcept NegatiefError as e:\n    print(e)', check: (c) => c.includes('def') && c.includes('raise') && c.includes('except') }
+                ],
+                enemy: { name: 'Exception Crafter ⚠️', hp: 90, maxHp: 90 },
+                xp: 1000,
+                skill: 'custom exceptions'
+            },
+
+            // HOOFDSTUK 6: MEESTER NIVEAU (Expert)
+            '6-1': {
+                title: '🎨 Decorators',
+                story: '🧙‍♂️ "De <strong>Decorator Wizard</strong>! Beheers <strong>decorators</strong> - functie wrappers!"',
+                challenges: [
+                    { text: '📜 Maak simpele decorator', hint: 'def mijn_decorator(func):\n    def wrapper():\n        print("Voor")\n        func()\n        print("Na")\n    return wrapper\n@mijn_decorator\ndef zeg_hallo():\n    print("Hallo")\nzeg_hallo()', check: (c) => c.includes('def') && c.includes('@') && c.includes('wrapper') },
+                    { text: '📜 Decorator met argumenten', hint: 'def mijn_decorator(func):\n    def wrapper(*args):\n        print("Start")\n        func(*args)\n    return wrapper\n@mijn_decorator\ndef groet(naam):\n    print(f"Hallo {naam}")\ngroet("Jan")', check: (c) => c.includes('*args') && c.includes('@') },
+                    { text: '📜 Decorator die return value behoudt', hint: 'def mijn_decorator(func):\n    def wrapper(*args):\n        result = func(*args)\n        return result * 2\n    return wrapper\n@mijn_decorator\ndef keer_twee(x):\n    return x\nprint(keer_twee(5))', check: (c) => c.includes('return') && c.includes('wrapper') && c.includes('@') }
+                ],
+                enemy: { name: 'Decorator Wizard 🎨', hp: 90, maxHp: 90 },
+                xp: 1050,
+                skill: 'decorators'
+            },
+            '6-2': {
+                title: '🔄 Generators',
+                story: '🧙‍♂️ "De <strong>Generator Master</strong>! Leer <strong>generators</strong> met yield!"',
+                challenges: [
+                    { text: '📜 Maak generator met yield', hint: 'def tel_tot(n):\n    i = 0\n    while i < n:\n        yield i\n        i += 1\nfor x in tel_tot(3):\n    print(x)', check: (c) => c.includes('yield') && c.includes('def') },
+                    { text: '📜 Generator voor fibonacci', hint: 'def fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        yield a\n        a, b = b, a + b\nfor x in fib(5):\n    print(x)', check: (c) => c.includes('yield') && c.includes('for') },
+                    { text: '📜 Generator expression', hint: 'gen = (x**2 for x in range(5))\nfor x in gen:\n    print(x)', check: (c) => c.includes('(') && c.includes('for') && c.includes('in') && c.includes(')') }
+                ],
+                enemy: { name: 'Generator Master 🔄', hp: 90, maxHp: 90 },
+                xp: 1100,
+                skill: 'generators'
+            },
+            '6-3': {
+                title: '📝 Context Managers',
+                story: '🧙‍♂️ "De <strong>Context Keeper</strong>! Beheers <strong>context managers</strong> met with!"',
+                challenges: [
+                    { text: '📜 Maak context manager met __enter__ en __exit__', hint: 'class MijnContext:\n    def __enter__(self):\n        print("Enter")\n        return self\n    def __exit__(self, *args):\n        print("Exit")\nwith MijnContext():\n    print("Binnen")', check: (c) => c.includes('__enter__') && c.includes('__exit__') && c.includes('with') },
+                    { text: '📜 Context manager met contextlib', hint: 'from contextlib import contextmanager\n@contextmanager\ndef mijn_context():\n    print("Start")\n    yield\n    print("Einde")\nwith mijn_context():\n    print("Binnen")', check: (c) => c.includes('contextmanager') && c.includes('yield') && c.includes('@') },
+                    { text: '📜 Context manager voor file handling', hint: 'class FileManager:\n    def __init__(self, naam):\n        self.naam = naam\n    def __enter__(self):\n        self.file = open(self.naam, "w")\n        return self.file\n    def __exit__(self, *args):\n        self.file.close()\nwith FileManager("test.txt") as f:\n    f.write("Test")\nprint("Klaar")', check: (c) => c.includes('__enter__') && c.includes('__exit__') && c.includes('open(') }
+                ],
+                enemy: { name: 'Context Keeper 📝', hp: 90, maxHp: 90 },
+                xp: 1150,
+                skill: 'context managers'
+            },
+            '6-4': {
+                title: '🔍 Regular Expressions',
+                story: '🧙‍♂️ "De <strong>Regex Master</strong>! Beheers <strong>regex</strong> voor pattern matching!"',
+                challenges: [
+                    { text: '📜 Gebruik re.search() voor pattern', hint: 'import re\ntekst = "Hallo 123"\nmatch = re.search(r"\\d+", tekst)\nif match:\n    print(match.group())', check: (c) => c.includes('import re') && c.includes('re.search(') },
+                    { text: '📜 Gebruik re.findall() voor alle matches', hint: 'import re\ntekst = "abc 123 def 456"\nnummers = re.findall(r"\\d+", tekst)\nprint(nummers)', check: (c) => c.includes('re.findall(') },
+                    { text: '📜 Gebruik re.sub() voor vervangen', hint: 'import re\ntekst = "Hallo Wereld"\nnieuw = re.sub(r"Wereld", "Python", tekst)\nprint(nieuw)', check: (c) => c.includes('re.sub(') }
+                ],
+                enemy: { name: 'Regex Master 🔍', hp: 90, maxHp: 90 },
+                xp: 1200,
+                skill: 'regex'
+            },
+            '6-5': {
+                title: '🌐 Working with APIs',
+                story: '🧙‍♂️ "De <strong>API Connector</strong>! Leer werken met <strong>APIs</strong>!"',
+                challenges: [
+                    { text: '📜 Simuleer API call met dict', hint: 'def api_call():\n    return {"status": "success", "data": [1,2,3]}\nresult = api_call()\nprint(result["status"])', check: (c) => c.includes('def') && c.includes('return') && c.includes('{') },
+                    { text: '📜 Parse JSON response', hint: 'import json\nresponse = \'{"naam": "Jan", "leeftijd": 25}\'\ndata = json.loads(response)\nprint(data["naam"])', check: (c) => c.includes('json.loads(') },
+                    { text: '📜 Error handling voor API', hint: 'def api_call():\n    try:\n        return {"status": "ok"}\n    except Exception as e:\n        return {"error": str(e)}\nresult = api_call()\nprint(result)', check: (c) => c.includes('try:') && c.includes('except') && c.includes('return') }
+                ],
+                enemy: { name: 'API Connector 🌐', hp: 90, maxHp: 90 },
+                xp: 1250,
+                skill: 'APIs'
+            },
+            '6-6': {
+                title: '👑 FINAL BOSS: De Ultieme Uitdaging',
+                story: '🧙‍♂️ <strong>Pythonicus spreekt:</strong><br><br>"Dit is het! De <strong>Code Chaos Dragon</strong> - de machtigste vijand van Pythonia! Gebruik ALLES wat je geleerd hebt om deze ultieme uitdaging te voltooien. Laat zien dat je een echte Meester Programmeur bent!"',
+                challenges: [
+                    { text: '📜 BOSS FASE 1: Maak een class "Held" met naam, hp, en een aanval() method', hint: 'class Held:\n    def __init__(self, naam, hp):\n        self.naam = naam\n        self.hp = hp\n    def aanval(self):\n        return f"{self.naam} valt aan!"\nh = Held("Arthur", 100)\nprint(h.aanval())', check: (c) => c.includes('class Held') && c.includes('__init__') && c.includes('def aanval') },
+                    { text: '📜 BOSS FASE 2: Gebruik list comprehension om alle even getallen 0-20 te krijgen, filter > 10, en print som', hint: 'getallen = [x for x in range(21) if x % 2 == 0 and x > 10]\nprint(sum(getallen))', check: (c) => c.includes('[') && c.includes('for') && c.includes('if') && c.includes('sum(') },
+                    { text: '📜 BOSS FASE 3: Maak decorator die functie 3x uitvoert, pas toe op functie die "Victory!" print', hint: 'def drie_keer(func):\n    def wrapper():\n        for _ in range(3):\n            func()\n    return wrapper\n@drie_keer\ndef victory():\n    print("Victory!")\nvictory()', check: (c) => c.includes('def') && c.includes('@') && c.includes('wrapper') && c.includes('for') }
+                ],
+                enemy: { name: '👑 CODE CHAOS DRAGON 🐉', hp: 90, maxHp: 90 },
+                xp: 2000,
+                skill: '👑 MEESTER PROGRAMMEUR'
+            }
         };
 
-        function loadLesson(num) {
-            const lesson = lessons[num];
+        let game = {
+            player: { level: 1, hp: 100, maxHp: 100, xp: 0, xpNext: 100, skills: [] },
+            currentLesson: '1-1',
+            enemy: null,
+            tutorialStep: 0,
+            completedLessons: [],
+            maxUnlockedLesson: '1-1',
+            currentAttack: 0
+        };
+
+        const tutorialSteps = [
+            { title: '🎓 Les 1: De Print Spreuk', text: 'Welkom, jonge held! Ik ben Pythonicus, je mentor. De eerste spreuk die je moet leren is de <strong>print()</strong> spreuk. Hiermee kun je berichten tonen!', code: 'print("Hallo Wereld!")', instruction: '👆 Dit is hoe je de print spreuk gebruikt. Typ tekst tussen aanhalingstekens binnen de haakjes.' },
+            { title: '📝 Hoe schrijf je code?', text: 'Kijk goed naar de structuur:<br><br>1️⃣ <strong>print</strong> - de naam van de spreuk<br>2️⃣ <strong>()</strong> - haakjes eromheen<br>3️⃣ <strong>"tekst"</strong> - je bericht tussen aanhalingstekens', code: 'print("Dit is mijn bericht!")', instruction: '💡 Je kunt ook enkele aanhalingstekens gebruiken: print(\'Hallo!\')' },
+            { title: '⚔️ Tijd om te vechten!', text: 'Nu ga je je eerste monster verslaan! Typ de code <strong>exact</strong> zoals je het geleerd hebt in het code veld hieronder.', code: 'print("Hallo Pythonia!")', instruction: '🎯 Typ dit in het code veld en klik op "Voer Spreuk Uit!" om de Syntax Bug aan te vallen!' }
+        ];
+
+        function startGame() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('tutorial-overlay').style.display = 'flex';
+        }
+
+        function nextTutorial() {
+            game.tutorialStep++;
+            if (game.tutorialStep < tutorialSteps.length) {
+                const step = tutorialSteps[game.tutorialStep];
+                document.getElementById('tutorial-title').innerHTML = step.title;
+                document.getElementById('tutorial-text').innerHTML = step.text;
+                document.getElementById('tutorial-code').textContent = step.code;
+                document.getElementById('tutorial-instruction').innerHTML = step.instruction;
+            } else {
+                document.getElementById('tutorial-overlay').style.display = 'none';
+                document.querySelector('.game-container').style.display = 'block';
+                loadLesson('1-1');
+            }
+        }
+
+        function loadLesson(lessonId) {
+            const lesson = lessons[lessonId];
             if (!lesson) return;
-            game.currentLesson = num;
-            game.enemy = { name: lesson.enemy, hp: lesson.enemyHp, maxHp: lesson.enemyHp };
-            document.getElementById('story').textContent = lesson.story;
-            document.getElementById('challenge').textContent = lesson.challenge;
-            document.getElementById('enemy-name').textContent = lesson.enemy;
+            
+            game.currentLesson = lessonId;
+            game.enemy = { ...lesson.enemy };
+            game.currentAttack = 0;
+            
+            document.getElementById('story').innerHTML = lesson.story;
+            document.getElementById('challenge').innerHTML = lesson.challenges[0].text;
+            document.getElementById('enemy-name').textContent = lesson.enemy.name;
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('code-input').value = '';
+            document.getElementById('next-lesson-container').innerHTML = '';
+            
+            renderLessons();
             updateUI();
+        }
+
+        function getNextLessonId(currentId) {
+            const [chapter, lessonNum] = currentId.split('-').map(Number);
+            if (lessonNum < 6) {
+                return `${chapter}-${lessonNum + 1}`;
+            } else if (chapter < 6) {
+                return `${chapter + 1}-1`;
+            }
+            return null;
+        }
+
+        function renderLessons() {
+            const lessonsDiv = document.getElementById('lessons');
+            lessonsDiv.innerHTML = '';
+            
+            const chapters = {
+                1: { name: '📘 Hoofdstuk 1: Basis Spreuken', icon: '🌱' },
+                2: { name: '📗 Hoofdstuk 2: Geavanceerde Technieken', icon: '🌿' },
+                3: { name: '📙 Hoofdstuk 3: Data Manipulatie', icon: '🌳' },
+                4: { name: '📕 Hoofdstuk 4: OOP', icon: '🏰' },
+                5: { name: '📔 Hoofdstuk 5: Bestanden & Errors', icon: '⚔️' },
+                6: { name: '📓 Hoofdstuk 6: Meester Niveau', icon: '👑' }
+            };
+
+            for (let chapter = 1; chapter <= 6; chapter++) {
+                const chapterDiv = document.createElement('div');
+                const chapterHeader = document.createElement('div');
+                chapterHeader.className = 'chapter-header';
+                
+                const [currentChapter] = game.currentLesson.split('-').map(Number);
+                const maxChapter = parseInt(game.maxUnlockedLesson.split('-')[0]);
+                
+                if (chapter > maxChapter) {
+                    chapterHeader.classList.add('locked');
+                }
+                
+                chapterHeader.innerHTML = `${chapters[chapter].icon} ${chapters[chapter].name}`;
+                chapterDiv.appendChild(chapterHeader);
+                
+                const lessonsContainer = document.createElement('div');
+                lessonsContainer.className = 'chapter-lessons';
+                
+                for (let lessonNum = 1; lessonNum <= 6; lessonNum++) {
+                    const lessonId = `${chapter}-${lessonNum}`;
+                    const lesson = lessons[lessonId];
+                    if (!lesson) continue;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'lesson-item';
+                    
+                    if (lessonId === game.currentLesson) {
+                        div.classList.add('active');
+                    } else if (game.completedLessons.includes(lessonId)) {
+                        div.classList.add('completed');
+                    } else if (!isLessonUnlocked(lessonId)) {
+                        div.classList.add('locked');
+                    }
+                    
+                    const icon = game.completedLessons.includes(lessonId) ? '✅' : `${chapter}.${lessonNum}`;
+                    div.innerHTML = `<span>${icon}</span><span>${lesson.title}</span>`;
+                    
+                    if (isLessonUnlocked(lessonId)) {
+                        div.onclick = () => loadLesson(lessonId);
+                    }
+                    
+                    lessonsContainer.appendChild(div);
+                }
+                
+                chapterDiv.appendChild(lessonsContainer);
+                lessonsDiv.appendChild(chapterDiv);
+            }
+        }
+
+        function isLessonUnlocked(lessonId) {
+            const [chapter, lessonNum] = lessonId.split('-').map(Number);
+            const [maxChapter, maxLesson] = game.maxUnlockedLesson.split('-').map(Number);
+            
+            if (chapter < maxChapter) return true;
+            if (chapter === maxChapter && lessonNum <= maxLesson) return true;
+            return false;
         }
 
         function runCode() {
@@ -124,50 +1110,109 @@
             const lesson = lessons[game.currentLesson];
             const output = document.getElementById('output');
             
-            if (code.includes(lesson.check)) {
-                output.innerHTML = '<span class="success">✓ Code succesvol!</span>\\n';
-                const prints = code.match(/print\\(['\"](.+?)['\"]\\)/g);
-                if (prints) prints.forEach(p => output.innerHTML += p.match(/['\"](.+?)['\"]/)[1] + '\\n');
+            if (!code.trim()) {
+                output.innerHTML = '<span class="error">❌ Je hebt nog geen code geschreven! Typ eerst je spreuk.</span>';
+                return;
+            }
+            
+            const currentChallenge = lesson.challenges[game.currentAttack];
+            
+            if (currentChallenge.check(code)) {
+                output.innerHTML = '<span class="success">✅ Spreuk succesvol uitgevoerd!</span>\n\n';
                 
-                const dmg = 30;
-                game.enemy.hp -= dmg;
-                output.innerHTML += `\\n⚔️ ${dmg} schade aan ${game.enemy.name}!\\n`;
+                const damage = 30;
+                game.enemy.hp -= damage;
+                game.currentAttack++;
+                
+                output.innerHTML += `⚔️ Je spreuk raakt! ${damage} schade aan ${game.enemy.name}!\n`;
                 
                 if (game.enemy.hp <= 0) {
-                    output.innerHTML += `\\n🎉 ${game.enemy.name} verslagen!\\n`;
+                    output.innerHTML += `\n🎉 OVERWINNING! Je hebt ${game.enemy.name} verslagen!\n`;
+                    output.innerHTML += `✨ +${lesson.xp} XP verdiend!\n`;
+                    
                     gainXP(lesson.xp);
-                    unlockNext();
+                    
+                    if (!game.player.skills.includes(lesson.skill)) {
+                        game.player.skills.push(lesson.skill);
+                        output.innerHTML += `\n🎯 Nieuwe spreuk geleerd: ${lesson.skill}!\n`;
+                        updateSkills();
+                    }
+                    
+                    if (!game.completedLessons.includes(game.currentLesson)) {
+                        game.completedLessons.push(game.currentLesson);
+                    }
+                    
+                    const nextLessonId = getNextLessonId(game.currentLesson);
+                    if (nextLessonId && lessons[nextLessonId]) {
+                        game.maxUnlockedLesson = nextLessonId;
+                        const [nextChapter, nextLesson] = nextLessonId.split('-');
+                        output.innerHTML += `\n🔓 Les ${nextChapter}.${nextLesson} ontgrendeld!\n`;
+                        
+                        const nextBtn = document.createElement('button');
+                        nextBtn.className = 'btn-next-lesson';
+                        nextBtn.textContent = `➡️ Ga naar Les ${nextChapter}.${nextLesson}: ${lessons[nextLessonId].title}`;
+                        nextBtn.onclick = () => loadLesson(nextLessonId);
+                        document.getElementById('next-lesson-container').innerHTML = '';
+                        document.getElementById('next-lesson-container').appendChild(nextBtn);
+                        
+                        renderLessons();
+                    } else {
+                        output.innerHTML += '\n\n🏆🎊👑 GEFELICITEERD! 👑🎊🏆\n\nJe hebt ALLE 36 lessen voltooid!\nJe bent nu een MEESTER PROGRAMMEUR van Pythonia!\n\nJe hebt de Code Chaos Dragon verslagen en Pythonia gered!\n\n✨ Je bent een legende! ✨';
+                    }
+                } else {
+                    if (game.currentAttack < lesson.challenges.length) {
+                        output.innerHTML += `\n💪 Goed gedaan! Het monster is verzwakt!\n`;
+                        output.innerHTML += `\n🎯 Nieuwe uitdaging...\n`;
+                        document.getElementById('challenge').innerHTML = lesson.challenges[game.currentAttack].text;
+                        document.getElementById('code-input').value = '';
+                    }
                 }
             } else {
-                output.innerHTML = '<span class="error">✗ Code bevat fouten!</span>';
+                output.innerHTML = '<span class="error">❌ Je spreuk werkt niet goed!</span>\n\n';
+                output.innerHTML += '💭 Controleer je code en probeer opnieuw!\n';
+                output.innerHTML += '• Klik op "Vraag Hulp" voor een voorbeeld!';
             }
+            
             updateUI();
         }
 
         function showHint() {
             const lesson = lessons[game.currentLesson];
-            document.getElementById('output').innerHTML = `💡 Hint:\\n${lesson.hint}`;
+            const currentChallenge = lesson.challenges[game.currentAttack];
+            document.getElementById('output').innerHTML = `💡 Tip van Pythonicus:\n\n${currentChallenge.hint}\n\n👆 Probeer dit!`;
         }
 
         function gainXP(xp) {
             game.player.xp += xp;
+            
             while (game.player.xp >= game.player.xpNext) {
                 game.player.level++;
                 game.player.xp -= game.player.xpNext;
                 game.player.xpNext = Math.floor(game.player.xpNext * 1.5);
                 game.player.maxHp += 20;
                 game.player.hp = game.player.maxHp;
-                document.getElementById('output').innerHTML += `\\n🎊 LEVEL UP! Nu level ${game.player.level}!`;
+                
+                const output = document.getElementById('output');
+                output.innerHTML += `\n\n🎊 LEVEL UP! Je bent nu level ${game.player.level}!\n`;
+                output.innerHTML += `❤️ Max HP verhoogd naar ${game.player.maxHp}!\n`;
             }
         }
 
-        function unlockNext() {
-            const next = game.currentLesson + 1;
-            if (lessons[next]) {
-                const items = document.querySelectorAll('.lesson-item');
-                items[next - 1].classList.remove('locked');
-                items[next - 1].onclick = () => loadLesson(next);
+        function updateSkills() {
+            const skillsDiv = document.getElementById('skills');
+            skillsDiv.innerHTML = '';
+            
+            if (game.player.skills.length === 0) {
+                skillsDiv.innerHTML = '<p style="opacity:0.6;">Nog geen spreuken geleerd...</p>';
+                return;
             }
+            
+            game.player.skills.forEach(skill => {
+                const badge = document.createElement('span');
+                badge.className = 'skill-badge';
+                badge.textContent = skill;
+                skillsDiv.appendChild(badge);
+            });
         }
 
         function updateUI() {
@@ -175,10 +1220,17 @@
             document.getElementById('hp').textContent = `${game.player.hp}/${game.player.maxHp}`;
             document.getElementById('xp').textContent = `${game.player.xp}/${game.player.xpNext}`;
             document.getElementById('xp-bar').style.width = `${(game.player.xp / game.player.xpNext) * 100}%`;
-            document.getElementById('enemy-hp').textContent = `${Math.max(0, game.enemy.hp)}/${game.enemy.maxHp}`;
+            
+            if (game.enemy) {
+                document.getElementById('enemy-name').textContent = game.enemy.name;
+                document.getElementById('enemy-hp').textContent = `${Math.max(0, game.enemy.hp)}/${game.enemy.maxHp}`;
+                
+                const lesson = lessons[game.currentLesson];
+                document.getElementById('attack-count').textContent = `${game.currentAttack}/${lesson.challenges.length}`;
+            }
         }
 
-        loadLesson(1);
+        updateSkills();
     </script>
 </body>
 </html>
